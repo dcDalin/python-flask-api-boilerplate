@@ -1,5 +1,5 @@
 # project/server/config.py
-"""App configurations"""
+"""App configurations dev/production/testing"""
 
 import os
 basedir = os.path.abspath(os.path.dirname(__file__))
