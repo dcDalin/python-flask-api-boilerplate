@@ -1,0 +1,30 @@
+language: python
+
+python:
+  - "3.6"
+
+service:
+  - postgresql
+
+before_install:
+  - export APP_SETTINGS="project.server.config.TestingConfig"
+  - export SECRET_KEY="justatest"
+
+install:
+  - pip install -r requirements.txt
+  - pip install coveralls
+
+before_script:
+  - psql -c "CREATE DATABASE python-flask-api-boilerplate_test;" -U postgres
+  - psql -c "ALTER USER postgres WITH PASSWORD 'password';" -U postgres
+  - python manage.py db init
+  - python manage.py db migrate
+  - python manage.py db upgrade
+
+script:
+  - nosetests --exe -v
+  - nosetests --exe --with-coverage --cover-package=project/server
+  - coveralls
+
+after_success:
+  - "coveralls"
