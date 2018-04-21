@@ -15,7 +15,7 @@ install:
   - pip install coveralls
 
 before_script:
-  - psql -c "CREATE DATABASE python-flask-api-boilerplate_test;" -U postgres
+  - psql -c "CREATE DATABASE python_flask_api_boilerplate_test;" -U postgres
   - psql -c "ALTER USER postgres WITH PASSWORD 'password';" -U postgres
   - python manage.py db init
   - python manage.py db migrate

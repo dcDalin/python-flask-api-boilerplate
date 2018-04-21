@@ -4,7 +4,7 @@
 import os
 basedir = os.path.abspath(os.path.dirname(__file__))
 postgres_local_base = 'postgresql://postgres:password@localhost/'
-database_name = 'python-flask-api-boilerplate'
+database_name = 'python_flask_api_boilerplate'
 
 
 class BaseConfig:
