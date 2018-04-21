@@ -13,6 +13,7 @@ before_install:
 install:
   - pip install -r requirements.txt
   - pip install coveralls
+  - pip install codecov
 
 before_script:
   - psql -c "CREATE DATABASE python_flask_api_boilerplate_test;" -U postgres
@@ -25,6 +26,7 @@ script:
   - nosetests --exe -v
   - nosetests --exe --with-coverage --cover-package=project/server
   - coveralls
+  - codecov --token=d8dafad7-611e-4023-a550-bfa76d8ea38a
 
 after_success:
   - "coveralls"
