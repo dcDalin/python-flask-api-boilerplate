@@ -7,7 +7,7 @@ POSTGRES_LOCAL_BASE = 'postgresql://postgres:password@localhost/'
 DATABASE_NAME = 'python_flask_api_boilerplate'
 
 
-class BaseConfig:
+class BaseConfig:  # pylint: disable=too-few-public-methods
     """Base configuration."""
     SECRET_KEY = os.getenv('SECRET_KEY', 'my_precious')
     DEBUG = False
@@ -15,14 +15,14 @@ class BaseConfig:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
-class DevelopmentConfig(BaseConfig):
+class DevelopmentConfig(BaseConfig):  # pylint: disable=too-few-public-methods
     """Development configuration."""
     DEBUG = True
     BCRYPT_LOG_ROUNDS = 4
     SQLALCHEMY_DATABASE_URI = POSTGRES_LOCAL_BASE + DATABASE_NAME
 
 
-class TestingConfig(BaseConfig):
+class TestingConfig(BaseConfig):  # pylint: disable=too-few-public-methods
     """Testing configuration."""
     DEBUG = True
     TESTING = True
@@ -31,7 +31,7 @@ class TestingConfig(BaseConfig):
     PRESERVE_CONTEXT_ON_EXCEPTION = False
 
 
-class ProductionConfig(BaseConfig):
+class ProductionConfig(BaseConfig):  # pylint: disable=too-few-public-methods
     """Production configuration."""
     SECRET_KEY = 'my_precious'
     DEBUG = False

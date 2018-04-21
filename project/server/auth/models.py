@@ -30,21 +30,19 @@ class User(DB.Model):
         Generates the Auth Token
         :return: string
         """
-        try:
-            utc_now = datetime.datetime.utcnow()
-            time_delta = datetime.timedelta(days=0, seconds=5)
-            payload = {
-                'exp': utc_now + time_delta,
-                'iat': datetime.datetime.utcnow(),
-                'sub': user_id
-            }
-            return jwt.encode(
-                payload,
-                APP.config.get('SECRET_KEY'),
-                algorithm='HS256'
-            )
-        except Exception as e:
-            return e
+
+        utc_now = datetime.datetime.utcnow()
+        time_delta = datetime.timedelta(days=0, seconds=5)
+        payload = {
+            'exp': utc_now + time_delta,
+            'iat': datetime.datetime.utcnow(),
+            'sub': user_id
+        }
+        return jwt.encode(
+            payload,
+            APP.config.get('SECRET_KEY'),
+            algorithm='HS256'
+        )
 
     @staticmethod
     def decode_auth_token(auth_token):

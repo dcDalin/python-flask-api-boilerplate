@@ -1,9 +1,9 @@
 # project/server/auth/views.py
 """Auth view endpoint routes"""
 
+
 from flask import Blueprint, request, make_response, jsonify
 from flask.views import MethodView
-
 from project.server import BCRYPT, DB
 from project.server.auth.models import User, BlacklistToken
 
@@ -22,28 +22,22 @@ class RegisterAPI(MethodView):
         # check if user already exists
         user = User.query.filter_by(email=post_data.get('email')).first()
         if not user:
-            try:
-                user = User(
-                    email=post_data.get('email'),
-                    password=post_data.get('password')
-                )
-                # insert the user
-                DB.session.add(user)
-                DB.session.commit()
-                # generate the auth token
-                auth_token = user.encode_auth_token(user.id)
-                response_object = {
-                    'status': 'success',
-                    'message': 'Successfully registered.',
-                    'auth_token': auth_token.decode()
-                }
-                return make_response(jsonify(response_object)), 201
-            except Exception as e:
-                response_object = {
-                    'status': 'fail',
-                    'message': 'Some error occurred. Please try again.'
-                }
-                return make_response(jsonify(response_object)), 401
+
+            user = User(
+                email=post_data.get('email'),
+                password=post_data.get('password')
+            )
+            # insert the user
+            DB.session.add(user)
+            DB.session.commit()
+            # generate the auth token
+            auth_token = user.encode_auth_token(user.id)
+            response_object = {
+                'status': 'success',
+                'message': 'Successfully registered.',
+                'auth_token': auth_token.decode()
+            }
+            return make_response(jsonify(response_object)), 201
         else:
             response_object = {
                 'status': 'fail',
@@ -61,34 +55,27 @@ class LoginAPI(MethodView):
         """Login post method"""
         # get the post data
         post_data = request.get_json()
-        try:
-            # fetch the user data
-            user = User.query.filter_by(
-                email=post_data.get('email')
-            ).first()
-            if user and BCRYPT.check_password_hash(user.password,
-                                                   post_data.get('password')):
-                auth_token = user.encode_auth_token(user.id)
-                if auth_token:
-                    response_object = {
-                        'status': 'success',
-                        'message': 'Successfully logged in.',
-                        'auth_token': auth_token.decode()
-                    }
-                    return make_response(jsonify(response_object)), 200
-            else:
+
+        # fetch the user data
+        user = User.query.filter_by(
+            email=post_data.get('email')
+        ).first()
+        if user and BCRYPT.check_password_hash(user.password,
+                                               post_data.get('password')):
+            auth_token = user.encode_auth_token(user.id)
+            if auth_token:
                 response_object = {
-                    'status': 'fail',
-                    'message': 'User does not exist.'
+                    'status': 'success',
+                    'message': 'Successfully logged in.',
+                    'auth_token': auth_token.decode()
                 }
-                return make_response(jsonify(response_object)), 404
-        except Exception as e:
-            print(e)
+                return make_response(jsonify(response_object)), 200
+        else:
             response_object = {
                 'status': 'fail',
-                'message': 'Try again'
+                'message': 'User does not exist.'
             }
-            return make_response(jsonify(response_object)), 500
+            return make_response(jsonify(response_object)), 404
 
 
 class UserAPI(MethodView):
@@ -156,21 +143,16 @@ class LogoutAPI(MethodView):
             if not isinstance(resp, str):
                 # mark the token as blacklisted
                 blacklist_token = BlacklistToken(token=auth_token)
-                try:
-                    # insert the token
-                    DB.session.add(blacklist_token)
-                    DB.session.commit()
-                    response_object = {
-                        'status': 'success',
-                        'message': 'Successfully logged out.'
-                    }
-                    return make_response(jsonify(response_object)), 200
-                except Exception as e:
-                    response_object = {
-                        'status': 'fail',
-                        'message': e
-                    }
-                    return make_response(jsonify(response_object)), 200
+
+                # insert the token
+                DB.session.add(blacklist_token)
+                DB.session.commit()
+                response_object = {
+                    'status': 'success',
+                    'message': 'Successfully logged out.'
+                }
+                return make_response(jsonify(response_object)), 200
+
             else:
                 response_object = {
                     'status': 'fail',
