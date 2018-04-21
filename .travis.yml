@@ -14,6 +14,7 @@ install:
   - pip install -r requirements.txt
   - pip install coveralls
   - pip install codecov
+  - pip install codacy-coverage
 
 before_script:
   - psql -c "CREATE DATABASE python_flask_api_boilerplate_test;" -U postgres
