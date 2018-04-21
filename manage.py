@@ -2,39 +2,28 @@
 """This module performs database initialization and running the app"""
 
 
-import unittest
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
-from project.server import app, db
+from project.server import APP, DB
 
-migrate = Migrate(app, db)
-manager = Manager(app)
+MIGRATE = Migrate(APP, DB)
+MANAGER = Manager(APP)
 
 # migrations
-manager.add_command('db', MigrateCommand)
+MANAGER.add_command('db', MigrateCommand)
 
 
-@manager.command
-def test():
-    """Runs the unit tests"""
-    tests = unittest.TestLoader().discover('project/tests', pattern='test*.py')
-    result = unittest.TextTestRunner(verbosity=2).run(tests)
-    if result.wasSuccessful():
-        return 0
-    return 1
-
-
-@manager.command
+@MANAGER.command
 def create_db():
-    """Creates the db tables."""
-    db.create_all()
+    """Creates the DB tables."""
+    DB.create_all()
 
 
-@manager.command
+@MANAGER.command
 def drop_db():
-    """Drops the db tables."""
-    db.drop_all()
+    """Drops the DB tables."""
+    DB.drop_all()
 
 
 if __name__ == '__main__':
-    manager.run()
+    MANAGER.run()

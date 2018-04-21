@@ -18,9 +18,9 @@ install:
 before_script:
   - psql -c "CREATE DATABASE python_flask_api_boilerplate_test;" -U postgres
   - psql -c "ALTER USER postgres WITH PASSWORD 'password';" -U postgres
-  - python manage.py db init
-  - python manage.py db migrate
-  - python manage.py db upgrade
+  - python manage.py DB init
+  - python manage.py DB migrate
+  - python manage.py DB upgrade
 
 script:
   - nosetests --exe -v

@@ -5,7 +5,7 @@ import time
 import json
 import unittest
 
-from project.server import db
+from project.server import DB
 from project.server.auth.models import User, BlacklistToken
 from project.tests.base import BaseTestCase
 
@@ -51,8 +51,8 @@ class TestAuthBlueprint(BaseTestCase):
             email='joe@gmail.com',
             password='test'
         )
-        db.session.add(user)
-        db.session.commit()
+        DB.session.add(user)
+        DB.session.commit()
         with self.client:
             response = register_user(self, 'joe@gmail.com', '123456')
             data = json.loads(response.data.decode())
@@ -223,8 +223,8 @@ class TestAuthBlueprint(BaseTestCase):
             # blacklist a valid token
             blacklist_token = BlacklistToken(
                 token=json.loads(resp_login.data.decode())['auth_token'])
-            db.session.add(blacklist_token)
-            db.session.commit()
+            DB.session.add(blacklist_token)
+            DB.session.commit()
             # blacklisted valid token logout
             response = self.client.post(
                 '/auth/logout',
@@ -247,8 +247,8 @@ class TestAuthBlueprint(BaseTestCase):
             # blacklist a valid token
             blacklist_token = BlacklistToken(
                 token=json.loads(resp_register.data.decode())['auth_token'])
-            db.session.add(blacklist_token)
-            db.session.commit()
+            DB.session.add(blacklist_token)
+            DB.session.commit()
             response = self.client.get(
                 '/auth/status',
                 headers=dict(

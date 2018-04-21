@@ -2,9 +2,9 @@
 """App configurations dev/production/testing"""
 
 import os
-basedir = os.path.abspath(os.path.dirname(__file__))
-postgres_local_base = 'postgresql://postgres:password@localhost/'
-database_name = 'python_flask_api_boilerplate'
+BASEDIR = os.path.abspath(os.path.dirname(__file__))
+POSTGRES_LOCAL_BASE = 'postgresql://postgres:password@localhost/'
+DATABASE_NAME = 'python_flask_api_boilerplate'
 
 
 class BaseConfig:
@@ -19,7 +19,7 @@ class DevelopmentConfig(BaseConfig):
     """Development configuration."""
     DEBUG = True
     BCRYPT_LOG_ROUNDS = 4
-    SQLALCHEMY_DATABASE_URI = postgres_local_base + database_name
+    SQLALCHEMY_DATABASE_URI = POSTGRES_LOCAL_BASE + DATABASE_NAME
 
 
 class TestingConfig(BaseConfig):
@@ -27,7 +27,7 @@ class TestingConfig(BaseConfig):
     DEBUG = True
     TESTING = True
     BCRYPT_LOG_ROUNDS = 4
-    SQLALCHEMY_DATABASE_URI = postgres_local_base + database_name + '_test'
+    SQLALCHEMY_DATABASE_URI = POSTGRES_LOCAL_BASE + DATABASE_NAME + '_test'
     PRESERVE_CONTEXT_ON_EXCEPTION = False
 
 

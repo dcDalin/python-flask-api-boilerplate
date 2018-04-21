@@ -1,4 +1,5 @@
 # project/server/__init__.py
+"""App entry file"""
 
 import os
 
@@ -7,17 +8,21 @@ from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 
-app = Flask(__name__)
-CORS(app)
+APP = Flask(__name__)
+CORS(APP)
 
-app_settings = os.getenv(
+APP_SETTINGS = os.getenv(
     'APP_SETTINGS',
     'project.server.config.DevelopmentConfig'
 )
-app.config.from_object(app_settings)
+APP.config.from_object(APP_SETTINGS)
 
-bcrypt = Bcrypt(app)
-db = SQLAlchemy(app)
+BCRYPT = Bcrypt(APP)
+DB = SQLAlchemy(APP)
 
-from project.server.auth.views import auth_blueprint
-app.register_blueprint(auth_blueprint)
+try:
+    from project.server.auth.views import AUTH_BLUEPRINT
+except ImportError:
+    print('import error')
+
+APP.register_blueprint(AUTH_BLUEPRINT)

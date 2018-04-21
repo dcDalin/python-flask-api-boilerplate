@@ -4,23 +4,23 @@
 import datetime
 import jwt
 
-from project.server import app, db, bcrypt
+from project.server import APP, DB, BCRYPT
 
 
-class User(db.Model):
+class User(DB.Model):
     """ User Model for storing user related details """
     __tablename__ = "users"
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    email = db.Column(db.String(255), unique=True, nullable=False)
-    password = db.Column(db.String(255), nullable=False)
-    registered_on = db.Column(db.DateTime, nullable=False)
-    admin = db.Column(db.Boolean, nullable=False, default=False)
+    id = DB.Column(DB.Integer, primary_key=True, autoincrement=True)
+    email = DB.Column(DB.String(255), unique=True, nullable=False)
+    password = DB.Column(DB.String(255), nullable=False)
+    registered_on = DB.Column(DB.DateTime, nullable=False)
+    admin = DB.Column(DB.Boolean, nullable=False, default=False)
 
     def __init__(self, email, password, admin=False):
         self.email = email
-        self.password = bcrypt.generate_password_hash(
-            password, app.config.get('BCRYPT_LOG_ROUNDS')
+        self.password = BCRYPT.generate_password_hash(
+            password, APP.config.get('BCRYPT_LOG_ROUNDS')
         ).decode()
         self.registered_on = datetime.datetime.now()
         self.admin = admin
@@ -31,14 +31,16 @@ class User(db.Model):
         :return: string
         """
         try:
+            utc_now = datetime.datetime.utcnow()
+            time_delta = datetime.timedelta(days=0, seconds=5)
             payload = {
-                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=0, seconds=5),
+                'exp': utc_now + time_delta,
                 'iat': datetime.datetime.utcnow(),
                 'sub': user_id
             }
             return jwt.encode(
                 payload,
-                app.config.get('SECRET_KEY'),
+                APP.config.get('SECRET_KEY'),
                 algorithm='HS256'
             )
         except Exception as e:
@@ -52,7 +54,7 @@ class User(db.Model):
         :return: integer|string
         """
         try:
-            payload = jwt.decode(auth_token, app.config.get('SECRET_KEY'))
+            payload = jwt.decode(auth_token, APP.config.get('SECRET_KEY'))
             is_blacklisted_token = BlacklistToken.check_blacklist(auth_token)
             if is_blacklisted_token:
                 return 'Token blacklisted. Please log in again.'
@@ -64,15 +66,15 @@ class User(db.Model):
             return 'Invalid token. Please log in again.'
 
 
-class BlacklistToken(db.Model):
+class BlacklistToken(DB.Model):
     """
     Token Model for storing JWT tokens
     """
     __tablename__ = 'blacklist_tokens'
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    token = db.Column(db.String(500), unique=True, nullable=False)
-    blacklisted_on = db.Column(db.DateTime, nullable=False)
+    id = DB.Column(DB.Integer, primary_key=True, autoincrement=True)
+    token = DB.Column(DB.String(500), unique=True, nullable=False)
+    blacklisted_on = DB.Column(DB.DateTime, nullable=False)
 
     def __init__(self, token):
         self.token = token
@@ -83,7 +85,7 @@ class BlacklistToken(db.Model):
 
     @staticmethod
     def check_blacklist(auth_token):
-        # check whether auth token has been blacklisted
+        """check whether auth token has been blacklisted"""
         res = BlacklistToken.query.filter_by(token=str(auth_token)).first()
         if res:
             return True

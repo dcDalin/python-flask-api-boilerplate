@@ -2,20 +2,20 @@
 """Base test config"""
 
 from flask_testing import TestCase
-from project.server import app, db
+from project.server import APP, DB
 
 
 class BaseTestCase(TestCase):
     """ Base Tests """
 
     def create_app(self):
-        app.config.from_object('project.server.config.TestingConfig')
-        return app
+        APP.config.from_object('project.server.config.TestingConfig')
+        return APP
 
     def setUp(self):
-        db.create_all()
-        db.session.commit()
+        DB.create_all()
+        DB.session.commit()
 
     def tearDown(self):
-        db.session.remove()
-        db.drop_all()
+        DB.session.remove()
+        DB.drop_all()

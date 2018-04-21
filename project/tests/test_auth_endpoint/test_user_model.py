@@ -3,7 +3,7 @@
 
 import unittest
 
-from project.server import db
+from project.server import DB
 from project.server.auth.models import User
 from project.tests.base import BaseTestCase
 
@@ -15,8 +15,8 @@ class TestUserModel(BaseTestCase):
             email='test@test.com',
             password='test'
         )
-        db.session.add(user)
-        db.session.commit()
+        DB.session.add(user)
+        DB.session.commit()
         auth_token = user.encode_auth_token(user.id)
         self.assertTrue(isinstance(auth_token, bytes))
 
@@ -25,8 +25,8 @@ class TestUserModel(BaseTestCase):
             email='test@test.com',
             password='test'
         )
-        db.session.add(user)
-        db.session.commit()
+        DB.session.add(user)
+        DB.session.commit()
         auth_token = user.encode_auth_token(user.id)
         self.assertTrue(isinstance(auth_token, bytes))
 
